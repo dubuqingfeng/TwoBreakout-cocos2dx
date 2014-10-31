@@ -36,8 +36,7 @@ bool AboutCoderLayer::setUpdateView(){
 	
 	CCMenuItemSprite* pStar=CCMenuItemSprite::create(CCSprite::createWithTexture(texturestar_up),CCSprite::createWithTexture(texturestar_down),this,menu_selector(AboutCoderLayer::menuReturnCallBack));
 	CC_BREAK_IF(!pStar);
-	pStar->setAnchorPoint(ccp(1,0));
-	pStar->setPosition(converSpritRel(getWinSize().width,10));
+	pStar->setPosition(converSpritRel(0,10));
 	CCMenu* pMenu=CCMenu::create(pStar,NULL);
 	CC_BREAK_IF(!pMenu);
 	pMenu->setPosition(CCPointZero);

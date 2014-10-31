@@ -14,6 +14,7 @@ private:
 	void vedioOnAndOffCallBack(cocos2d::CCObject* pSend);
 	// 跳转的 关于开发者界面的回调函数
 	void menuCoderCallback(cocos2d::CCObject* pSend);
-
+	void menu2pCallback(cocos2d::CCObject* pSend);
+	void menuAboutCoderCallback(cocos2d::CCObject* pSend);
 };
 #endif

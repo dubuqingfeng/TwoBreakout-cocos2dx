@@ -23,7 +23,9 @@ bool LoadingLayer::init(){
 
 	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/return_down.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this)); // 返回菜单按钮
 	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/return_up.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this)); // 返回菜单按钮
-	
+
+	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/logo.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this)); // 返回菜单按钮
+
 	isRet=true;
 	} while (0);
 	return isRet;
@@ -58,6 +60,11 @@ bool LoadingLayer::setUpdateView(){
 	bool isRet=false;
 	do 
 	{
+		//画面中部添加团队logo
+		CCSprite* loadbackimg=CCSprite::create("gmbg/lodingbg.png");
+			CC_BREAK_IF(!loadbackimg);
+			loadbackimg->setPosition(ccp(getWinSize().width/2+getWinOrigin().x,getWinSize().height/5+getWinOrigin().y));
+			this->addChild(loadbackimg,1);
 	// 设置进度条的背景图片 我们把他放到屏幕下方的1/5处	
     CCSprite* loadbackimg=CCSprite::create("gmbg/lodingbg.png");
 	CC_BREAK_IF(!loadbackimg);	
