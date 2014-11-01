@@ -19,8 +19,10 @@ Scene* GameLvlChoose::createScene(){
 
 bool GameLvlChoose::init(){
 	auto visibleSize = Director::getInstance()->getVisibleSize();
+	//添加关卡选择背景
 	
-	//**1**-------- 创建关卡选则菜单 ------------------------------
+	//添加返回按钮
+	//**1**-------- 创建关卡选择菜单 ------------------------------
 	const char* norImg = "Button/choose_btn_nor.png";
 	const char* lightImg = "Button/choose_btn_light.png";
 	
@@ -71,3 +73,4 @@ void GameLvlChoose::level_3(CCObject* pSender) {
 	CCLOG("333333");
 	_level = 3;
 }
+//返回按钮的回调函数

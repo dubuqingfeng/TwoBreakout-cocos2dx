@@ -6,7 +6,7 @@
 USING_NS_CC;
 LoadingLayer::LoadingLayer(){
 	this->loadingNum=0;
-	this->totalNum=8;
+	this->totalNum=14;
 }
 bool LoadingLayer::init(){
 	bool isRet=false;
@@ -21,9 +21,15 @@ bool LoadingLayer::init(){
 	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/button_sound_on.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this)); // 欢迎界面 声音开始
 	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/button_sound_off.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this)); // 欢迎界面 声音关闭
 
-	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/coder_up.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this)); // 欢迎界面 开发者按钮
-	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/coder_down.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this));
+	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/1p.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this)); // 欢迎界面 开发者按钮
+	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/1p_down.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this));
+	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/2p_down.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this));
+	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/about_down.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this));
+	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/option_down.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this));
 
+	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/2p.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this));
+	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/option.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this));
+	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/about.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this));
 	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/return_down.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this)); // 返回菜单按钮
 	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/return_up.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this)); // 返回菜单按钮
 
