@@ -5,7 +5,7 @@
 #include <jni.h>
 #include "platform/android/jni/JniHelper.h"
 #ifdef __cplusplus
-#define CLASS_NAME "org/cocos2dx/cpp/MainActivity"
+#define CLASS_NAME "com/digdream/breakout/MainActivity"
 using namespace cocos2d;
 extern "C" {
 

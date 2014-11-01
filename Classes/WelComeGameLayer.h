@@ -16,5 +16,6 @@ private:
 	void menuCoderCallback(cocos2d::CCObject* pSend);
 	void menu2pCallback(cocos2d::CCObject* pSend);
 	void menuAboutCoderCallback(cocos2d::CCObject* pSend);
+	void to2pLayer();
 };
 #endif

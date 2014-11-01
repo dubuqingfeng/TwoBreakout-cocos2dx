@@ -1,5 +1,8 @@
 #include "LoadingLayer.h"
 #include "WelComeGameLayer.h"
+#include "GameLvlChoose2p.h"
+#include <jni.h>
+#include "platform/android/jni/JniHelper.h"
 USING_NS_CC;
 LoadingLayer::LoadingLayer(){
 	this->loadingNum=0;
@@ -24,8 +27,6 @@ bool LoadingLayer::init(){
 	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/return_down.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this)); // 返回菜单按钮
 	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/return_up.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this)); // 返回菜单按钮
 
-	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/logo.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this)); // 返回菜单按钮
-
 	isRet=true;
 	} while (0);
 	return isRet;
@@ -44,12 +45,46 @@ void LoadingLayer::loadCallBack(CCObject* ped){
 	if(loadingNum<totalNum){
 		
 	}else{
-		// 加载完的时候跳转到响应的界面
-		CCLOG("loading over");
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) //判断当前是否为Android平台
+JniMethodInfo minfo;//定义Jni函数信息结构体
+//getStaticMethodInfo 次函数返回一个bool值表示是否找到此函数
+
+bool isHave = JniHelper::getStaticMethodInfo(minfo,
+		"com/digdream/breakout/MainActivity","initGameMode","()I");
+jint _int;
+if (!isHave) {
+	CCLog("jni:n此函数不存在");
+} else {
+	CCLog("jni:c此函数存在");
+	//调用此函数
+	_int = minfo.env->CallStaticIntMethod(minfo.classID, minfo.methodID);
+
+	//尝试jint是否能正常接收返回的int值
+	JniMethodInfo minfo_ty;
+	bool isHave = JniHelper::getStaticMethodInfo(minfo_ty, "com/digdream/breakout/MainActivity", "initGameMode", "()I");
+	if (isHave) {
+		minfo_ty.env->CallStaticVoidMethod(minfo_ty.classID, minfo_ty.methodID,_int);
+	}
+	if(_int == 2)
+	{to2pLayer();}
+	else
+	{
 		goWelcomeLayer();
 	}
 }
+CCLog("jni-javajj函数执行完毕");
+#endif
+		// 加载完的时候跳转到响应的界面
+		CCLOG("loading over");
 
+	}
+}
+void LoadingLayer::to2pLayer() {
+	CCLOG("to2player");
+	CCScene* se = GameLvlChoose2p::createScene();
+	CCDirector::sharedDirector()->replaceScene(
+			CCTransitionSlideInR::create(1, se));
+}
 
 void LoadingLayer::goWelcomeLayer(){
 	CCScene* se=WelComeGameLayer::scene();
@@ -61,10 +96,11 @@ bool LoadingLayer::setUpdateView(){
 	do 
 	{
 		//画面中部添加团队logo
-		CCSprite* loadbackimg=CCSprite::create("gmbg/lodingbg.png");
-			CC_BREAK_IF(!loadbackimg);
-			loadbackimg->setPosition(ccp(getWinSize().width/2+getWinOrigin().x,getWinSize().height/5+getWinOrigin().y));
-			this->addChild(loadbackimg,1);
+	CCSprite* logoimg=CCSprite::create("gmbg/logo.png");
+	CC_BREAK_IF(!logoimg);
+	logoimg->setPosition(ccp(getWinSize().width/2+getWinOrigin().x,getWinSize().height/2+getWinOrigin().y));
+	this->addChild(logoimg,1);
+
 	// 设置进度条的背景图片 我们把他放到屏幕下方的1/5处	
     CCSprite* loadbackimg=CCSprite::create("gmbg/lodingbg.png");
 	CC_BREAK_IF(!loadbackimg);	

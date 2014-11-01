@@ -4,6 +4,8 @@
 #include "GameLvlChoose.h"
 #include "GameLvlChoose2p.h"
 #include "AboutCoderLayer.h"
+#include <jni.h>
+#include "platform/android/jni/JniHelper.h"
 USING_NS_CC;
 bool WelComeGameLayer::init() {
 	bool isRet = false;
@@ -25,6 +27,10 @@ void WelComeGameLayer::onEnter() {
 			CCUserDefault::sharedUserDefault()->setBoolForKey("isplay", true);
 		}
 	}
+
+	//应该调用java层，判断mode是否为2，如果是2直接跳转到GameLvlChoose2p
+
+
 }
 CCScene* WelComeGameLayer::scene() {
 	CCScene* scene = CCScene::create();
@@ -75,8 +81,8 @@ bool WelComeGameLayer::setUpdateView() {
 		CC_BREAK_IF(!pVedioTo);
 		// 注意 里面的 0.15 和0.55 都是 通过PS 定位 看看这个图片放在那里计算出来的
 		pVedioTo->setPosition(
-				converSpritRel(getWinSize().width * 0.15f,
-						getWinSize().height * 0.55f));
+				converSpritRel(getWinSize().width * 0.10f,
+						getWinSize().height * 0.95f));
 
 		// 创建开发者 菜单按钮
 		CCTexture2D* texturecoder_up =
@@ -88,11 +94,11 @@ bool WelComeGameLayer::setUpdateView() {
 		CCMenuItemSprite* pcoder = CCMenuItemSprite::create(
 				CCSprite::createWithTexture(texturecoder_up),
 				CCSprite::createWithTexture(texturecoder_down), this,
-				menu_selector(WelComeGameLayer::menuCoderCallback));
+				menu_selector(WelComeGameLayer::menuAboutCoderCallback));
 		CC_BREAK_IF(!pcoder);
 		pcoder->setPosition(
-				converSpritRel(getWinSize().width * 0.78f,
-						getWinSize().height * 0.21f));
+				converSpritRel(getWinSize().width * 0.73f,
+						getWinSize().height * 0.16f));
 
 		// 创建菜单按钮
 		CCTexture2D* texture2p_up =
@@ -107,8 +113,8 @@ bool WelComeGameLayer::setUpdateView() {
 				menu_selector(WelComeGameLayer::menu2pCallback));
 		CC_BREAK_IF(!p2p);
 		p2p->setPosition(
-				converSpritRel(getWinSize().width * 0.78f,
-						getWinSize().height * 0.34f));
+				converSpritRel(getWinSize().width * 0.73f,
+						getWinSize().height * 0.32f));
 
 		// 创建开发者 菜单按钮
 		CCTexture2D* textureaboutcoder_up =
@@ -120,20 +126,20 @@ bool WelComeGameLayer::setUpdateView() {
 		CCMenuItemSprite* paboutcoder = CCMenuItemSprite::create(
 				CCSprite::createWithTexture(texturecoder_up),
 				CCSprite::createWithTexture(texturecoder_down), this,
-				menu_selector(WelComeGameLayer::menuAboutCoderCallback));
+				menu_selector(WelComeGameLayer::menuCoderCallback));
 		CC_BREAK_IF(!paboutcoder);
 		paboutcoder->setPosition(
-				converSpritRel(getWinSize().width * 0.78f,
-						getWinSize().height * 0.27f));
+				converSpritRel(getWinSize().width * 0.73f,
+						getWinSize().height * 0.24f));
 
-		CCMenu* pMenu = CCMenu::create(pVedioTo, pcoder,paboutcoder, p2p, NULL);
+		CCMenu* pMenu = CCMenu::create(pVedioTo, pcoder, paboutcoder, p2p,
+				NULL);
 		CC_BREAK_IF(!pMenu);
 		pMenu->setPosition(CCPointZero);
 		this->addChild(pMenu, 2);
 
-		//应该调用java层，判断mode是否为2，如果是2直接跳转到GameLvlChoose2p
-		isRet = true;
-	} while (0);
+			isRet = true;
+		} while (0);
 	return isRet;
 }
 void WelComeGameLayer::vedioOnAndOffCallBack(CCObject* pSend) {
@@ -159,6 +165,12 @@ void WelComeGameLayer::menuAboutCoderCallback(CCObject* pSend) {
 			CCTransitionSlideInR::create(1, se));
 }
 void WelComeGameLayer::menu2pCallback(CCObject* pSend) {
+	CCScene* se = GameLvlChoose2p::createScene();
+	CCDirector::sharedDirector()->replaceScene(
+			CCTransitionSlideInR::create(1, se));
+}
+void WelComeGameLayer::to2pLayer() {
+	CCLOG("to2player");
 	CCScene* se = GameLvlChoose2p::createScene();
 	CCDirector::sharedDirector()->replaceScene(
 			CCTransitionSlideInR::create(1, se));

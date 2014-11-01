@@ -24,7 +24,7 @@ void GameLvlChoose2p::Login2RegisterClicked(CCObject *pSender) {
 
 	JniMethodInfo jnifo;
 	bool isHave = JniHelper::getStaticMethodInfo(jnifo,
-			"org/cocos2dx/cpp/MainActivity", "initStatic",
+			"com/digdream/breakout/MainActivity", "initStatic",
 			"()Ljava/lang/Object;");
 	jobject jobj;
 	if (isHave) {
@@ -32,7 +32,7 @@ void GameLvlChoose2p::Login2RegisterClicked(CCObject *pSender) {
 	}
 	CCLog("正确获取到了 jobj");
 	//获取方法信息
-	isHave = JniHelper::getMethodInfo(jnifo, "org/cocos2dx/cpp/MainActivity",
+	isHave = JniHelper::getMethodInfo(jnifo, "com/digdream/breakout/MainActivity",
 			"isInviter", "([Ljava/lang/String;)V");
 	if (isHave) {
 		jclass str_cls = jnifo.env->FindClass("java/lang/String");
@@ -44,6 +44,37 @@ void GameLvlChoose2p::Login2RegisterClicked(CCObject *pSender) {
 	CCLog("jni执行完毕");
 }
 bool GameLvlChoose2p::init() {
+	//这里判断isMode()
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) //判断当前是否为Android平台
+JniMethodInfo minfo;//定义Jni函数信息结构体
+//getStaticMethodInfo 次函数返回一个bool值表示是否找到此函数
+
+bool isHave = JniHelper::getStaticMethodInfo(minfo,
+		"com/digdream/breakout/MainActivity","initGameMode","()I");
+jint _int;
+if (!isHave) {
+
+} else {
+	//调用此函数
+	_int = minfo.env->CallStaticIntMethod(minfo.classID, minfo.methodID);
+
+	//尝试jint是否能正常接收返回的int值
+	JniMethodInfo minfo_ty;
+	bool isHave = JniHelper::getStaticMethodInfo(minfo_ty, "com/digdream/breakout/MainActivity", "initGameMode", "()I");
+	if (isHave) {
+		minfo_ty.env->CallStaticVoidMethod(minfo_ty.classID, minfo_ty.methodID,_int);
+	}
+	if(_int == 2)
+	{
+
+	}
+	else
+	{
+		goWelcomeLayer();
+	}
+}
+#endif
+
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 
 	//**1**-------- 创建关卡选则菜单 ------------------------------
@@ -51,8 +82,8 @@ bool GameLvlChoose2p::init() {
 	const char* lightImg = "Button/choose_btn_light.png";
 	CC_CALLBACK_1(GameLvlChoose2p::Login2RegisterClicked, this);
 	JniMethodInfo jnifo;
-	bool isHave = JniHelper::getStaticMethodInfo(jnifo,
-			"org/cocos2dx/cpp/MainActivity", "initStatic", "()V");
+	bool isHavetest = JniHelper::getStaticMethodInfo(jnifo,
+			"com/digdream/breakout/MainActivity", "initStatic", "()V");
 	jobject jobj;
 	if (isHave) {
 		jobj = jnifo.env->CallStaticObjectMethod(jnifo.classID, jnifo.methodID);
@@ -129,4 +160,8 @@ void GameLvlChoose2p::level_3(CCObject* pSender) {
 void GameLvlChoose2p::menuReturnCallBack(CCObject* pSend){
 	CCScene* scene=WelComeGameLayer::scene();
 	CCDirector::sharedDirector()->replaceScene(CCTransitionSlideInL::create(1,scene));
+}
+void GameLvlChoose2p::goWelcomeLayer(){
+	CCScene* se=WelComeGameLayer::scene();
+	CCDirector::sharedDirector()->replaceScene(CCTransitionMoveInR::create(1,se));
 }

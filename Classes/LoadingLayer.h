@@ -14,5 +14,6 @@ private:
 	int totalNum;// 一共要加载的图片数量
 	bool setUpdateView();// 用来初始化页面的 基本的纹理
 	void goWelcomeLayer();
+	void to2pLayer();
 };
 #endif

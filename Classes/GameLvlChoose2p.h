@@ -21,7 +21,7 @@ private:
     void menuReturnCallBack(cocos2d::CCObject* pSend);
 	//--1--根据不同级别createLabel，菜单标签
 	Label* createLevelLab(const char* sLvl);
-
+	void goWelcomeLayer();
 	int _level;
 };/**/
 

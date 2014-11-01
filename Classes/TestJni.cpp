@@ -4,7 +4,7 @@
 #include <jni.h>
 #include "platform/android/jni/JniHelper.h"
 //#include "jnier.h"
-#define CLASS_NAME "org/cocos2dx/cpp/MainActivity"
+#define CLASS_NAME "com/digdream/breakout/MainActivity"
 #include "string"
 using namespace cocos2d;
 #ifdef __cplusplus
