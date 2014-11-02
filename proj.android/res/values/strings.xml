@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">test</string>
+    <string name="offline">对方已断开，游戏结束</string>
+    <string name="ok">好</string>
+    <string name="please2p">请使用茄子快传工具进行双人对战</string>
+
+</resources>

@@ -75,7 +75,7 @@ bool GameLvlChoose2p::init() {
 
 	// 这里创建一个准备按钮
 	// 点击以后改成已准备
-
+	CCUserDefault::sharedUserDefault()->setBoolForKey("isprepare", false);
 	//**1**	关卡菜单
 	auto menu = CCMenu::create(level_1_Item, level_2_Item, level_3_Item,
 			nullptr);
@@ -87,10 +87,10 @@ bool GameLvlChoose2p::init() {
 	// 添加声音菜单按钮
 	CCTexture2D* textureon =
 			CCTextureCache::sharedTextureCache()->textureForKey(
-					"gmme/button_sound_on.png");
+					"gmme/unprepared.png");
 	CCTexture2D* textureoff =
 			CCTextureCache::sharedTextureCache()->textureForKey(
-					"gmme/button_sound_off.png");
+					"gmme/prepared.png");
 	CCMenuItemSprite* pitemVon = CCMenuItemSprite::create(
 			CCSprite::createWithTexture(textureon),
 			CCSprite::createWithTexture(textureon));
@@ -154,7 +154,7 @@ void GameLvlChoose2p::menuPerpareCallback(CCObject* pSend) {
 		//调用java inittoast
 		//这里弹出toast
 		//提示请使用茄子快传工具进行双人对战
-		const char* pStr = "please prepare!!!";
+		const char* pStr = "please to2p!!!";
 		JniMethodInfo MethodInfo;
 		bool BExist = JniHelper::getStaticMethodInfo(MethodInfo,
 				"com/digdream/breakout/MainActivity", "initToast",
@@ -196,51 +196,124 @@ void GameLvlChoose2p::level_1(CCObject* pSender) {
 	_level = 1;
 	levelchoose = true;
 	//if点击了准备按钮，则发送message，否则调用jni 非ui线程调用toast
-	if(CCUserDefault::sharedUserDefault()->getBoolForKey("isprepare", true))
-	{
+	if (CCUserDefault::sharedUserDefault()->getBoolForKey("isprepare", true)) {
 		//发送message
+		JniMethodInfo minfo;		//定义Jni函数信息结构体
+		//getStaticMethodInfo 次函数返回一个bool值表示是否找到此函数
+		bool isHave = JniHelper::getStaticMethodInfo(minfo,
+				"com/digdream/breakout/MainActivity", "sendPreparedMessage", "(I)V");
 
-	}
-	else
-	{
-		//调用inittoast，提示请选择关卡
-		const char* pchooseStr = "please prepare!!!";
-		JniMethodInfo MethodInfo;
-		bool BchooseExist = JniHelper::getStaticMethodInfo(MethodInfo,
-				"com/digdream/breakout/MainActivity", "initToast",
-				"(Ljava/lang/String;)V");
-		if (BchooseExist) {
-			jstring Str = MethodInfo.env->NewStringUTF(pchooseStr);
-			MethodInfo.env->CallStaticVoidMethod(MethodInfo.classID,
-					MethodInfo.methodID, Str);
-			MethodInfo.env->DeleteLocalRef(Str);
-			MethodInfo.env->DeleteLocalRef(MethodInfo.classID);
+		if (!isHave) {
+			CCLog("jni:此函数不存在");
+		} else {
+			CCLog("jni:此函数存在");
+			//调用此函数
+			minfo.env->CallStaticVoidMethod(minfo.classID, minfo.methodID, _level);
 		}
+		CCLog("jni-java函数执行完毕");
 	}
-	CCScene* se = GameViewLayer::scene();
-	CCDirector::sharedDirector()->replaceScene(
-			CCTransitionSlideInR::create(1, se));
-
+else {
+	//调用inittoast，提示请选择关卡
+	const char* pchooseStr = "pleasetest1 prepare!!!";
+	JniMethodInfo MethodInfo;
+	bool BchooseExist = JniHelper::getStaticMethodInfo(MethodInfo,
+			"com/digdream/breakout/MainActivity", "initToast",
+			"(Ljava/lang/String;)V");
+	if (BchooseExist) {
+		jstring Str = MethodInfo.env->NewStringUTF(pchooseStr);
+		MethodInfo.env->CallStaticVoidMethod(MethodInfo.classID,
+				MethodInfo.methodID, Str);
+		MethodInfo.env->DeleteLocalRef(Str);
+		MethodInfo.env->DeleteLocalRef(MethodInfo.classID);
+	}
+}
+/*CCScene* se = GameViewLayer::scene();
+ CCDirector::sharedDirector()->replaceScene(
+ CCTransitionSlideInR::create(1, se));
+ */
 }
 
 void GameLvlChoose2p::level_2(CCObject* pSender) {
-	CCLOG("2");
-	_level = 2;
-	levelchoose = true;
+CCLOG("2");
+_level = 2;
+levelchoose = true;
+	//if点击了准备按钮，则发送message，否则调用jni 非ui线程调用toast
+	if (CCUserDefault::sharedUserDefault()->getBoolForKey("isprepare", true)) {
+		//发送message
+		JniMethodInfo minfo;		//定义Jni函数信息结构体
+		//getStaticMethodInfo 次函数返回一个bool值表示是否找到此函数
+		bool isHave = JniHelper::getStaticMethodInfo(minfo,
+				"com/digdream/breakout/MainActivity", "sendPreparedMessage", "(I)V");
+
+		if (!isHave) {
+			CCLog("jni:此函数不存在");
+		} else {
+			CCLog("jni:此函数存在");
+			//调用此函数
+			minfo.env->CallStaticVoidMethod(minfo.classID, minfo.methodID, _level);
+		}
+		CCLog("jni-java函数执行完毕");
+	}
+else {
+	//调用inittoast，提示请选择关卡
+	const char* pchooseStr = "pleasetest2 prepare!!!";
+	JniMethodInfo MethodInfo;
+	bool BchooseExist = JniHelper::getStaticMethodInfo(MethodInfo,
+			"com/digdream/breakout/MainActivity", "initToast",
+			"(Ljava/lang/String;)V");
+	if (BchooseExist) {
+		jstring Str = MethodInfo.env->NewStringUTF(pchooseStr);
+		MethodInfo.env->CallStaticVoidMethod(MethodInfo.classID,
+				MethodInfo.methodID, Str);
+		MethodInfo.env->DeleteLocalRef(Str);
+		MethodInfo.env->DeleteLocalRef(MethodInfo.classID);
+	}
+}
 }
 
 void GameLvlChoose2p::level_3(CCObject* pSender) {
-	CCLOG("3");
-	_level = 3;
-	levelchoose = true;
+CCLOG("3");
+_level = 3;
+levelchoose = true;
+	//if点击了准备按钮，则发送message，否则调用jni 非ui线程调用toast
+	if (CCUserDefault::sharedUserDefault()->getBoolForKey("isprepare", true)) {
+		//发送message
+		JniMethodInfo minfo;		//定义Jni函数信息结构体
+		//getStaticMethodInfo 次函数返回一个bool值表示是否找到此函数
+		bool isHave = JniHelper::getStaticMethodInfo(minfo,
+				"com/digdream/breakout/MainActivity", "sendPreparedMessage", "(I)V");
+
+		if (!isHave) {
+			CCLog("jni:此函数不存在");
+		} else {
+			CCLog("jni:此函数存在");
+			//调用此函数
+			minfo.env->CallStaticVoidMethod(minfo.classID, minfo.methodID, _level);
+		}
+		CCLog("jni-java函数执行完毕");
+	}
+else {
+	//调用inittoast，提示请选择关卡
+	const char* pchooseStr = "pleasetest3 prepare!!!";
+	JniMethodInfo MethodInfo;
+	bool BchooseExist = JniHelper::getStaticMethodInfo(MethodInfo,
+			"com/digdream/breakout/MainActivity", "initToast",
+			"(Ljava/lang/String;)V");
+	if (BchooseExist) {
+		jstring Str = MethodInfo.env->NewStringUTF(pchooseStr);
+		MethodInfo.env->CallStaticVoidMethod(MethodInfo.classID,
+				MethodInfo.methodID, Str);
+		MethodInfo.env->DeleteLocalRef(Str);
+		MethodInfo.env->DeleteLocalRef(MethodInfo.classID);
+	}
+}
 }
 void GameLvlChoose2p::menuReturnCallBack(CCObject* pSend) {
-	CCScene* scene = WelComeGameLayer::scene();
-	CCDirector::sharedDirector()->replaceScene(
-			CCTransitionSlideInL::create(1, scene));
+CCScene* scene = WelComeGameLayer::scene();
+CCDirector::sharedDirector()->replaceScene(
+		CCTransitionSlideInL::create(1, scene));
 }
 void GameLvlChoose2p::goWelcomeLayer() {
-	CCScene* se = WelComeGameLayer::scene();
-	CCDirector::sharedDirector()->replaceScene(
-			CCTransitionMoveInR::create(1, se));
+CCScene* se = WelComeGameLayer::scene();
+CCDirector::sharedDirector()->replaceScene(CCTransitionMoveInR::create(1, se));
 }

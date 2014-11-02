@@ -6,7 +6,7 @@
 USING_NS_CC;
 LoadingLayer::LoadingLayer(){
 	this->loadingNum=0;
-	this->totalNum=14;
+	this->totalNum=16;
 }
 bool LoadingLayer::init(){
 	bool isRet=false;
@@ -30,6 +30,8 @@ bool LoadingLayer::init(){
 	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/2p.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this));
 	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/option.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this));
 	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/about.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this));
+	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/prepared.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this));
+	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/unprepared.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this));
 	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/return_down.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this)); // 返回菜单按钮
 	CCTextureCache::sharedTextureCache()->addImageAsync("gmme/return_up.png",CC_CALLBACK_1(LoadingLayer::loadCallBack,this)); // 返回菜单按钮
 
