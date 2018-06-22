@@ -29,10 +29,8 @@ public abstract class BaseActivity extends Activity implements Bindlistener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		//构建GameShare对象
 		if (mGameShare == null)
 			mGameShare = new GameShare(getApplicationContext());
-		//注册好友上/下线监听方法
 		mGameShare.addUserListener(mUserListener);
 
 		new Thread() {
@@ -52,7 +50,6 @@ public abstract class BaseActivity extends Activity implements Bindlistener {
 		super.onDestroy();
 	}
 	
-	//获得远端所有用户信息
 	protected static GameUserInfo getRemoteUser() {
 		List<GameUserInfo> users = mGameShare.getRemoteUsers();
 		if (users.size() < 1) {
@@ -84,7 +81,6 @@ public abstract class BaseActivity extends Activity implements Bindlistener {
 			}
 		}
 	};
-	//掉线的对话框
 	protected void showOfflineDialog() {
 		AlertDialog.Builder builder = new Builder(BaseActivity.this);
 		builder.setMessage(R.string.offline);

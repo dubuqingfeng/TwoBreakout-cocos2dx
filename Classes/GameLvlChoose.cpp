@@ -19,10 +19,7 @@ Scene* GameLvlChoose::createScene(){
 
 bool GameLvlChoose::init(){
 	auto visibleSize = Director::getInstance()->getVisibleSize();
-	//添加关卡选择背景
 	
-	//添加返回按钮
-	//**1**-------- 创建关卡选择菜单 ------------------------------
 	const char* norImg = "Button/choose_btn_nor.png";
 	const char* lightImg = "Button/choose_btn_light.png";
 	
@@ -38,9 +35,7 @@ bool GameLvlChoose::init(){
 	auto level_3_Item = MenuItemImage::create(norImg, lightImg, CC_CALLBACK_1(GameLvlChoose::level_3,this));
 	level_3_Item->addChild(createLevelLab("3"));
 	
-	//**1**菜单
 	auto menu = CCMenu::create(level_1_Item, level_2_Item, level_3_Item, nullptr);
-	//**1**按照一行放置
 	menu->alignItemsHorizontallyWithPadding(20);
 	menu->setPosition(ccp(visibleSize.width / 2, visibleSize.height / 2));
 
@@ -73,4 +68,3 @@ void GameLvlChoose::level_3(CCObject* pSender) {
 	CCLOG("333333");
 	_level = 3;
 }
-//返回按钮的回调函数

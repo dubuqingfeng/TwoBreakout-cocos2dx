@@ -23,12 +23,9 @@ void WelComeGameLayer::onEnter() {
 		if (CCUserDefault::sharedUserDefault()->getBoolForKey("isplay", true)) {
 			CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic(
 					"music/dt.mp3", true);
-			// 把 音乐状态设置为播放状态
 			CCUserDefault::sharedUserDefault()->setBoolForKey("isplay", true);
 		}
 	}
-
-	//应该调用java层，判断mode是否为2，如果是2直接跳转到GameLvlChoose2p
 
 }
 CCScene* WelComeGameLayer::scene() {
@@ -40,7 +37,6 @@ CCScene* WelComeGameLayer::scene() {
 bool WelComeGameLayer::setUpdateView() {
 	bool isRet = false;
 	do {
-		// 从缓存中 取出 背景图片
 		CCTexture2D* texturebg =
 				CCTextureCache::sharedTextureCache()->textureForKey(
 						"gmbg/welcomebg.png");
@@ -49,7 +45,6 @@ bool WelComeGameLayer::setUpdateView() {
 		pSpriteBg->setPosition(getWinCenter());
 		this->addChild(pSpriteBg, 1);
 
-		// 添加声音菜单按钮
 		CCTexture2D* textureon =
 				CCTextureCache::sharedTextureCache()->textureForKey(
 						"gmme/button_sound_on.png");
@@ -65,7 +60,6 @@ bool WelComeGameLayer::setUpdateView() {
 				CCSprite::createWithTexture(textureoff));
 		CC_BREAK_IF(!pitemVoff);
 		CCMenuItemToggle* pVedioTo = NULL;
-		// 当现在 音乐是 播放的时候界面上显示的按钮应该是 暂停音乐按钮 反之 则显示播放按钮
 		if (CCUserDefault::sharedUserDefault()->getBoolForKey("isplay",
 				false)) {
 			pVedioTo = CCMenuItemToggle::createWithTarget(this,
@@ -78,12 +72,10 @@ bool WelComeGameLayer::setUpdateView() {
 		}
 
 		CC_BREAK_IF(!pVedioTo);
-		// 注意 里面的 0.15 和0.55 都是 通过PS 定位 看看这个图片放在那里计算出来的
 		pVedioTo->setPosition(
 				converSpritRel(getWinSize().width * 0.10f,
 						getWinSize().height * 0.95f));
 
-		// 创建关于开发者 菜单按钮
 		CCTexture2D* texturecoder_up =
 				CCTextureCache::sharedTextureCache()->textureForKey(
 						"gmme/about.png");
@@ -99,7 +91,6 @@ bool WelComeGameLayer::setUpdateView() {
 				converSpritRel(getWinSize().width * 0.73f,
 						getWinSize().height * 0.16f));
 
-		//	创建单人游戏按钮
 		CCTexture2D* texture1p_up =
 				CCTextureCache::sharedTextureCache()->textureForKey(
 						"gmme/1p.png");
@@ -115,7 +106,6 @@ bool WelComeGameLayer::setUpdateView() {
 				converSpritRel(getWinSize().width * 0.73f,
 						getWinSize().height * 0.40f));
 
-		// 创建双人游戏按钮
 		CCTexture2D* texture2p_up =
 				CCTextureCache::sharedTextureCache()->textureForKey(
 						"gmme/2p.png");
@@ -131,7 +121,6 @@ bool WelComeGameLayer::setUpdateView() {
 				converSpritRel(getWinSize().width * 0.73f,
 						getWinSize().height * 0.32f));
 
-		// 创建设置按钮，单人游戏按钮
 		CCTexture2D* textureaboutcoder_up =
 				CCTextureCache::sharedTextureCache()->textureForKey(
 						"gmme/option.png");
@@ -180,10 +169,8 @@ void WelComeGameLayer::menuAboutCoderCallback(CCObject* pSend) {
 			CCTransitionSlideInR::create(1, se));
 }
 void WelComeGameLayer::menu2pCallback(CCObject* pSend) {
-	//这里判断isMode()
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) //判断当前是否为Android平台
-	JniMethodInfo minfo; //定义Jni函数信息结构体
-	//getStaticMethodInfo 次函数返回一个bool值表示是否找到此函数
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID) 
+	JniMethodInfo minfo; 
 
 	bool isHave = JniHelper::getStaticMethodInfo(minfo,
 			"com/digdream/breakout/MainActivity","initGameMode","()I");
@@ -191,10 +178,7 @@ void WelComeGameLayer::menu2pCallback(CCObject* pSend) {
 	if (!isHave) {
 
 	} else {
-		//调用此函数
 		_int = minfo.env->CallStaticIntMethod(minfo.classID, minfo.methodID);
-
-		//尝试jint是否能正常接收返回的int值
 		JniMethodInfo minfo_ty;
 		bool isHave = JniHelper::getStaticMethodInfo(minfo_ty, "com/digdream/breakout/MainActivity", "initGameMode", "()I");
 		if (isHave) {
@@ -207,9 +191,7 @@ void WelComeGameLayer::menu2pCallback(CCObject* pSend) {
 		/*}
 		else
 		{
-			//这里弹出toast
-			//提示请使用茄子快传工具进行双人对战
-			const char* pStr = "请使用茄子快传工具进行双人对战!!!";
+			const char* pStr = "jni";
 			JniMethodInfo MethodInfo;
 			bool BExist = JniHelper::getStaticMethodInfo(MethodInfo,"com/digdream/breakout/MainActivity","initToast","(Ljava/lang/String;)V");
 			if (BExist)

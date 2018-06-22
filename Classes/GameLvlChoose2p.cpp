@@ -29,24 +29,22 @@ void GameLvlChoose2p::Login2RegisterClicked(CCObject *pSender) {
 	if (isHave) {
 		jobj = jnifo.env->CallStaticObjectMethod(jnifo.classID, jnifo.methodID);
 	}
-	CCLog("正确获取到了 jobj");
-	//获取方法信息
+	CCLog(" jobj");
 	isHave = JniHelper::getMethodInfo(jnifo,
 			"com/digdream/breakout/MainActivity", "isInviter",
 			"([Ljava/lang/String;)V");
 	if (isHave) {
 		jclass str_cls = jnifo.env->FindClass("java/lang/String");
-		jstring str1 = jnifo.env->NewStringUTF("a"); //标识数据无意义，供java判断传入数据类型
+		jstring str1 = jnifo.env->NewStringUTF("a");
 		jobjectArray arrs = jnifo.env->NewObjectArray(3, str_cls, 0);
 		jnifo.env->SetObjectArrayElement(arrs, 0, str1);
 		jnifo.env->CallVoidMethod(jobj, jnifo.methodID, arrs);
 	}
-	CCLog("jni执行完毕");
+	CCLog("jni");
 }
 bool GameLvlChoose2p::init() {
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 
-	//**1**-------- 创建关卡选择菜单 ------------------------------
 	const char* norImg = "Button/choose_btn_nor.png";
 	const char* lightImg = "Button/choose_btn_light.png";
 	CC_CALLBACK_1(GameLvlChoose2p::Login2RegisterClicked, this);
@@ -57,7 +55,7 @@ bool GameLvlChoose2p::init() {
 	if (isHavetest) {
 		jobj = jnifo.env->CallStaticObjectMethod(jnifo.classID, jnifo.methodID);
 	}
-	CCLog("正确获取到了 jobj");
+	CCLog("jobj");
 	//Lv_1
 	auto level_1_Item = MenuItemImage::create(norImg, lightImg,
 			CC_CALLBACK_1(GameLvlChoose2p::level_1, this));
@@ -73,18 +71,15 @@ bool GameLvlChoose2p::init() {
 			CC_CALLBACK_1(GameLvlChoose2p::level_3, this));
 	level_3_Item->addChild(createLevelLab("3"));
 
-	// 这里创建一个准备按钮
-	// 点击以后改成已准备
 	CCUserDefault::sharedUserDefault()->setBoolForKey("isprepare", false);
-	//**1**	关卡菜单
+	//**1**
 	auto menu = CCMenu::create(level_1_Item, level_2_Item, level_3_Item,
 			nullptr);
 
-	//**1**	按照一行放置
+	//**1**
 	menu->alignItemsHorizontallyWithPadding(20);
 	menu->setPosition(ccp(visibleSize.width / 2, visibleSize.height / 2));
 	this->addChild(menu);
-	// 添加声音菜单按钮
 	CCTexture2D* textureon =
 			CCTextureCache::sharedTextureCache()->textureForKey(
 					"gmme/unprepared.png");
@@ -112,7 +107,6 @@ bool GameLvlChoose2p::init() {
 	pVedioTo->setPosition(
 			converSpritRel(getWinSize().width * 0.50f,
 					getWinSize().height * 0.35f));
-	// 创建返回菜单
 	CCTexture2D* texturestar_up =
 			CCTextureCache::sharedTextureCache()->textureForKey(
 					"gmme/return_up.png");
@@ -131,12 +125,7 @@ bool GameLvlChoose2p::init() {
 	this->scheduleUpdate();
 	return true;
 }
-//更新函数
 void GameLvlChoose2p::update(float delta) {
-	//这里监听
-	//if(本地准备好&&收到对方message，并且message中选择关卡一致)
-	//{发送message;跳转}
-	//
 }
 
 Label* GameLvlChoose2p::createLevelLab(const char* sLvl) {
@@ -146,14 +135,9 @@ Label* GameLvlChoose2p::createLevelLab(const char* sLvl) {
 	return level_lab;
 }
 void GameLvlChoose2p::menuPerpareCallback(CCObject* pSend) {
-	//if已选择关卡，发送准备好的message，否则调用toast
 	if (CCUserDefault::sharedUserDefault()->getBoolForKey("isprepare", false)) {
-		//未准备
 		CCLOG("weizhunbei");
 		CCUserDefault::sharedUserDefault()->setBoolForKey("isprepare", false);
-		//调用java inittoast
-		//这里弹出toast
-		//提示请使用茄子快传工具进行双人对战
 		const char* pStr = "please to2p!!!";
 		JniMethodInfo MethodInfo;
 		bool BExist = JniHelper::getStaticMethodInfo(MethodInfo,
@@ -169,11 +153,8 @@ void GameLvlChoose2p::menuPerpareCallback(CCObject* pSend) {
 	} else {
 		CCLOG("yizhunbei");
 		CCUserDefault::sharedUserDefault()->setBoolForKey("isprepare", true);
-		//准备好了，选择关卡
 		if (levelchoose == true) {
-			//选择关卡并准备好了，发送信息到message
 		} else {
-			//调用inittoast，提示请选择关卡
 			const char* pchooseStr = "please prepare!!!";
 			JniMethodInfo MethodInfo;
 			bool BchooseExist = JniHelper::getStaticMethodInfo(MethodInfo,
@@ -192,28 +173,23 @@ void GameLvlChoose2p::menuPerpareCallback(CCObject* pSend) {
 }
 void GameLvlChoose2p::level_1(CCObject* pSender) {
 	CCLOG("1");
-	//关卡选择按钮
 	_level = 1;
 	levelchoose = true;
-	//if点击了准备按钮，则发送message，否则调用jni 非ui线程调用toast
 	if (CCUserDefault::sharedUserDefault()->getBoolForKey("isprepare", true)) {
-		//发送message
-		JniMethodInfo minfo;		//定义Jni函数信息结构体
-		//getStaticMethodInfo 次函数返回一个bool值表示是否找到此函数
+		JniMethodInfo minfo;
+		//getStaticMethodInfo 
 		bool isHave = JniHelper::getStaticMethodInfo(minfo,
 				"com/digdream/breakout/MainActivity", "sendPreparedMessage", "(I)V");
 
 		if (!isHave) {
-			CCLog("jni:此函数不存在");
+			CCLog("jni:");
 		} else {
-			CCLog("jni:此函数存在");
-			//调用此函数
+			CCLog("jni:");
 			minfo.env->CallStaticVoidMethod(minfo.classID, minfo.methodID, _level);
 		}
-		CCLog("jni-java函数执行完毕");
+		CCLog("jni-");
 	}
 else {
-	//调用inittoast，提示请选择关卡
 	const char* pchooseStr = "pleasetest1 prepare!!!";
 	JniMethodInfo MethodInfo;
 	bool BchooseExist = JniHelper::getStaticMethodInfo(MethodInfo,
@@ -237,25 +213,20 @@ void GameLvlChoose2p::level_2(CCObject* pSender) {
 CCLOG("2");
 _level = 2;
 levelchoose = true;
-	//if点击了准备按钮，则发送message，否则调用jni 非ui线程调用toast
 	if (CCUserDefault::sharedUserDefault()->getBoolForKey("isprepare", true)) {
-		//发送message
-		JniMethodInfo minfo;		//定义Jni函数信息结构体
-		//getStaticMethodInfo 次函数返回一个bool值表示是否找到此函数
+		JniMethodInfo minfo;
 		bool isHave = JniHelper::getStaticMethodInfo(minfo,
 				"com/digdream/breakout/MainActivity", "sendPreparedMessage", "(I)V");
 
 		if (!isHave) {
-			CCLog("jni:此函数不存在");
+			CCLog("jni");
 		} else {
-			CCLog("jni:此函数存在");
-			//调用此函数
+			CCLog("jni:");
 			minfo.env->CallStaticVoidMethod(minfo.classID, minfo.methodID, _level);
 		}
-		CCLog("jni-java函数执行完毕");
+		CCLog("jni-");
 	}
 else {
-	//调用inittoast，提示请选择关卡
 	const char* pchooseStr = "pleasetest2 prepare!!!";
 	JniMethodInfo MethodInfo;
 	bool BchooseExist = JniHelper::getStaticMethodInfo(MethodInfo,
@@ -275,25 +246,20 @@ void GameLvlChoose2p::level_3(CCObject* pSender) {
 CCLOG("3");
 _level = 3;
 levelchoose = true;
-	//if点击了准备按钮，则发送message，否则调用jni 非ui线程调用toast
 	if (CCUserDefault::sharedUserDefault()->getBoolForKey("isprepare", true)) {
-		//发送message
-		JniMethodInfo minfo;		//定义Jni函数信息结构体
-		//getStaticMethodInfo 次函数返回一个bool值表示是否找到此函数
+		JniMethodInfo minfo;
 		bool isHave = JniHelper::getStaticMethodInfo(minfo,
 				"com/digdream/breakout/MainActivity", "sendPreparedMessage", "(I)V");
 
 		if (!isHave) {
-			CCLog("jni:此函数不存在");
+			CCLog("jni:");
 		} else {
-			CCLog("jni:此函数存在");
-			//调用此函数
+			CCLog("jni");
 			minfo.env->CallStaticVoidMethod(minfo.classID, minfo.methodID, _level);
 		}
-		CCLog("jni-java函数执行完毕");
+		CCLog("jni-");
 	}
 else {
-	//调用inittoast，提示请选择关卡
 	const char* pchooseStr = "pleasetest3 prepare!!!";
 	JniMethodInfo MethodInfo;
 	bool BchooseExist = JniHelper::getStaticMethodInfo(MethodInfo,

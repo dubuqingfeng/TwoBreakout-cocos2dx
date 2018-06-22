@@ -12,7 +12,6 @@ extern "C" {
 #endif
 void Java_org_cocos2dx_cpp_MainActivity_initMode(JNIEnv* env,
         jobject thiz) {
-        CCLog("µÇÂ¼Ê§°Ü");
         CCLog("java from c");
 }
 #ifdef __cplusplus

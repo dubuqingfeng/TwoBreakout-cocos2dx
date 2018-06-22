@@ -5,7 +5,13 @@
 #include "GameOverScene.h"
 #include "SimpleAudioEngine.h"
 USING_NS_CC;
-#define PTM_RATIO 32.0f //32像素等于一米CCScene* GameViewLayer::scene() {CCScene* scene = CCScene::create();GameViewLayer* layer = GameViewLayer::create();scene->addChild(layer);return scene;}
+#define PTM_RATIO 32.0f
+CCScene* GameViewLayer::scene() {
+CCScene* scene = CCScene::create();
+GameViewLayer* layer = GameViewLayer::create();
+scene->addChild(layer);
+return scene;
+}
 bool GameViewLayer::init() {
 	bool isRet = false;
 	do {
@@ -13,18 +19,14 @@ bool GameViewLayer::init() {
 		CC_BREAK_IF(!setUpdateView());
 		isRet = true;
 	} while (0);
-//创建球的精灵
 	ballSp = CCSprite::create("ball.png");
 	ballSp->setPosition(ccp(39, 300));
 	this->addChild(ballSp);
 
-//创建挡板
 	paddleSp = CCSprite::create("Paddle.png");
 	paddleSp->setPosition(ccp(120, 30));
 	this->addChild(paddleSp);
-//创建一个重力加速度是8.0的世界
 	_world = new b2World(b2Vec2(0, 0));
-//1.创建一个b2BodyDef-->b2Body
 	b2BodyDef paddleBodyDef;
 	paddleBodyDef.type = b2_dynamicBody;
 	paddleBodyDef.position.Set(paddleSp->getPositionX() / PTM_RATIO,
@@ -32,20 +34,17 @@ bool GameViewLayer::init() {
 	paddleBodyDef.userData = paddleSp;
 	_paddle = _world->CreateBody(&paddleBodyDef);
 
-//2.设置物理属性 大小，形状，密度
 	b2PolygonShape boxShape;
 	boxShape.SetAsBox(paddleSp->getContentSize().width / 2.0f / PTM_RATIO,
 			paddleSp->getContentSize().height / 2.0f / PTM_RATIO);
 	b2FixtureDef paddleFixDef;
 	paddleFixDef.shape = &boxShape;
-//密度
 	paddleFixDef.density = 10.0f;
 
 	paddleFixDef.friction = 0.4f;
 	paddleFixDef.restitution = 0.1f;
 	_paddle->CreateFixture(&paddleFixDef);
 
-//添加被打击的砖块
 	const int padding = 30;
 	int offsetX = 150;
 	for (int i = 0; i < 4; i++) {
@@ -54,7 +53,6 @@ bool GameViewLayer::init() {
 		block->setTag(3);
 		this->addChild(block);
 
-		//物理属性
 		b2Body* blockBody = Box2dUtils::createDynamicBody(150 / PTM_RATIO,
 				offsetX  / PTM_RATIO, block, _world);
 		b2PolygonShape blockBox;
@@ -66,19 +64,16 @@ bool GameViewLayer::init() {
 
 	}
 
-//1.创建一个b2BodyDef-->b2Body
 	b2BodyDef ballBodyDef;
 	ballBodyDef.type = b2_dynamicBody;
 	ballBodyDef.position.Set(39 / PTM_RATIO, 300 / PTM_RATIO);
 	ballBodyDef.userData = ballSp;
 	ball = _world->CreateBody(&ballBodyDef);
 
-//2.设置物理属性 大小，形状，密度
 	b2CircleShape circle;
 	circle.m_radius = (ballSp->getContentSize().width / 2.0f) / PTM_RATIO;
 	b2FixtureDef ballFixDef;
 	ballFixDef.shape = &circle;
-//密度
 	ballFixDef.density = 3;
 
 	ballFixDef.friction = 0.2;
@@ -86,16 +81,14 @@ bool GameViewLayer::init() {
 	ball->CreateFixture(&ballFixDef);
 	ball->ApplyLinearImpulse(ball->GetMass() * b2Vec2(11,22),
 			ball->GetWorldCenter(), true);
-//获取屏幕宽度
 	CCSize screenSize = CCDirector::sharedDirector()->getWinSize();
 //3.b2BodyDef -- >b2Body
 	b2BodyDef groundBodyDef;
 	groundBodyDef.type = b2_staticBody;
-	groundBodyDef.position.Set(0, 0); //相当于锚点
+	groundBodyDef.position.Set(0, 0);
 	b2Body* groundBody = _world->CreateBody(&groundBodyDef);
 //b2FixtureDef -->b2Fixture
 
-//设置地面
 	b2EdgeShape groundShape;
 	groundShape.Set(b2Vec2(0, 0), b2Vec2(screenSize.width / PTM_RATIO, 0));
 	b2FixtureDef groundFixDef;
@@ -103,7 +96,6 @@ bool GameViewLayer::init() {
 	groundFixDef.friction = 0.9f;
 	_bottom = groundBody->CreateFixture(&groundFixDef);
 
-//创建左边的墙，上边，右边
 	b2EdgeShape leftWall;
 	leftWall.Set(b2Vec2(0, 0), b2Vec2(0, screenSize.height / PTM_RATIO));
 	groundFixDef.shape = &leftWall;
@@ -124,7 +116,6 @@ bool GameViewLayer::init() {
 
 	this->scheduleUpdate();
 
-//触控
 	this->setTouchEnabled(true);
 
 	EventDispatcher* eventDispatcher =
@@ -137,7 +128,6 @@ bool GameViewLayer::init() {
 	auto listen = EventListenerTouchOneByOne::create();
 //listen->onTouchBegan = CC_CALLBACK_2(GameViewLayer::onTouchBegan,this);
 
-//如果不加入此句消息依旧会向下传递
 	listen->setSwallowTouches(true);
 
 	listen->onTouchBegan = [=](Touch* pTouch,Event* event)
@@ -148,10 +138,9 @@ bool GameViewLayer::init() {
 
 		b2Fixture* paddleFix = _paddle->GetFixtureList();
 
-		//CCRect paddleRect; 	在cocos2d世界中判断。
+		//CCRect paddleRect;
 		//paddleRect.containsPoint(touchPos);
 			if(paddleFix->TestPoint(touchPhysicsPos)) {
-				//鼠标关节，鼠标控制
 				b2MouseJointDef mouseJointDef;
 				mouseJointDef.bodyA = _world->CreateBody(new b2BodyDef);
 				mouseJointDef.bodyB = _paddle;
@@ -205,7 +194,6 @@ int GameViewLayer::_getTagForBody(b2Body* body) {
 void GameViewLayer::update(float delta) {
 	_world->Step(delta, 6, 6);
 
-//物理世界中的物体移动反映到cocos2dx屏幕
 	for (b2Body* b = _world->GetBodyList(); b; b = b->GetNext()) {
 		if (b->GetUserData()) {
 			b2Vec2 physicPos = b->GetPosition();
@@ -270,7 +258,6 @@ void GameViewLayer::update(float delta) {
 bool GameViewLayer::setUpdateView() {
 	bool isRet = false;
 	do {
-		// 创建返回菜单
 		/*CCTexture2D* texturestar_up =
 		 CCTextureCache::sharedTextureCache()->textureForKey(
 		 "gmme/return_up.png");

@@ -23,14 +23,12 @@ bool AboutCoderLayer::setUpdateView(){
 	bool isRet=false;
 	do 
 	{
-   // 添加背景图片
 	CCTexture2D* textture=CCTextureCache::sharedTextureCache()->textureForKey("gmbg/coder.png");
 	CCSprite* psbg=CCSprite::createWithTexture(textture);
 	CC_BREAK_IF(!psbg);
 	psbg->setPosition(converSpritRel(getWinSize().width/2,getWinSize().height/2));
 	this->addChild(psbg,1);
 
-	// 创建返回菜单
 	CCTexture2D* texturestar_up = CCTextureCache::sharedTextureCache()->textureForKey("gmme/return_up.png");
 	CCTexture2D* texturestar_down = CCTextureCache::sharedTextureCache()->textureForKey("gmme/return_down.png");
 	

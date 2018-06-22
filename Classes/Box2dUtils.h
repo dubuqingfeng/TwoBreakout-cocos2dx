@@ -1,4 +1,4 @@
-#pragma  once //避免重复包含  
+#pragma  once
 
 
 #include "../../../../external/Box2D/Box2D.h"
@@ -8,9 +8,9 @@ public:
 	static b2Body* createDynamicBody(float posX, float posY, void* userData, b2World* _world){
 		
 		b2BodyDef ballBodyDef;
-		ballBodyDef.type = b2_dynamicBody; // 
+		ballBodyDef.type = b2_dynamicBody;
 		ballBodyDef.position.Set(posX, posY);
-		ballBodyDef.userData = userData; // 把屏幕中的精灵作为 物理世界中物体的 userData
+		ballBodyDef.userData = userData;
 		b2Body* ball = _world ->CreateBody(&ballBodyDef);
 		return ball;
 	}

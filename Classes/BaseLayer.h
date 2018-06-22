@@ -6,9 +6,9 @@ public:
 	static cocos2d::CCScene* scene();
 	virtual bool init();
 	CREATE_FUNC(BaseLayer);
-	cocos2d::CCSize getWinSize();// 得到当前可视窗口的大小
-	cocos2d::CCPoint getWinOrigin();// 得到当前可视窗口的起始点
-	cocos2d::CCPoint getWinCenter();// 得到屏幕正中间的点
-	cocos2d::CCPoint converSpritRel(float x, float y);//把设在屏幕中的位置转化成 可视窗口的 位置  
+	cocos2d::CCSize getWinSize();
+	cocos2d::CCPoint getWinOrigin();
+	cocos2d::CCPoint getWinCenter();
+	cocos2d::CCPoint converSpritRel(float x, float y);
 };
 #endif
